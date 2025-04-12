@@ -1,3 +1,9 @@
+@import url(./assets/material-icons/css/materialdesignicons.css);
+@font-face {
+  font-family: "Poppins";
+  src: url(./assets/fonts/Poppins-Regular.ttf);
+}
+
 :root {
   --body-color: #fff;
   --sidebar-color: #d4ebf8;
@@ -15,7 +21,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Segoe UI", sans-serif;
+  font-family: "Poppins";
   /* outline: 2px solid red; */
 }
 
@@ -105,9 +111,6 @@ li {
 }
 
 .js-sidenav-toggle {
-  position: relative;
-  top: 5px;
-
   outline-color: transparent;
   background-color: var(--primary-color);
   color: var(--body-color);
@@ -131,6 +134,16 @@ li {
 
 .module-content {
   padding: 15px;
+}
+
+.content-header {
+  position: relative;
+  top: 15px;
+
+  display: flex;
+  flex-direction: row;
+  gap: 1.2rem;
+  align-items: center;
 }
 
 .card {
