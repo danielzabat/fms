@@ -34,6 +34,7 @@ body {
   align-items: center;
   gap: 0.8rem;
   background-color: var(--primary-color);
+  border-bottom: 5px double var(--toggle-color);
 
   h1,
   h2 {
@@ -148,4 +149,5 @@ footer {
   padding: 0.4rem;
   font-size: 0.8rem;
   color: var(--body-color);
+  border-top: 5px double var(--toggle-color);
 }
