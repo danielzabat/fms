@@ -51,7 +51,7 @@ body {
   }
 
   img {
-    width: 5%;
+    width: 60px;
     height: auto;
     border-radius: 100%;
     border: 3px solid var(--toggle-color);
