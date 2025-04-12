@@ -95,6 +95,10 @@ body {
   }
 }
 
+li {
+  list-style: none;
+}
+
 .sidebar a:hover {
   background: var(--primary-color);
   color: white;
