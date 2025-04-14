@@ -4,14 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="fms-style.css">
+    <link rel="stylesheet" href="./assets/css/fms-style.css">
+    <link rel="shortcut icon" href="./assets/favicon/SIS.ico" type="image/x-icon">
     <title>Finance Management</title>
 </head>
+<style>
+
+</style>
 
 <body>
     <header>
         <div class="header-content">
-            <img src="SIS-logo.png" alt="Student Information System Logo">
+            <img src="./assets/img/SIS-logo.png" alt="Student Information System Logo">
             <div>
                 <h1>Student Information System</h1>
                 <h2>Finance</h2>
@@ -22,14 +26,19 @@
         <aside class="sidebar">
             <nav aria-label="Main navigation">
                 <ul>
-                    <li><a href="#"><span class="mdi mdi-account-school-outline"></span><span>Student Fees</span></a>
+                    <li><a href="index.html"><span class="mdi mdi-account-school-outline"></span><span>Student
+                                Fees</span></a>
                     </li>
-                    <li><a href="#"><span class="mdi mdi-invoice-list-outline"></span><span>Billing Invoicing</span></a>
+                    <li><a href="billing-invoicing.html"><span class="mdi mdi-invoice-list-outline"></span><span>Billing
+                                Invoicing</span></a>
                     </li>
-                    <li><a href="#"><span class="mdi mdi-certificate-outline"></span> <span>Scholarship</span></a></li>
-                    <li><a href="#"><span class="mdi mdi-cash-refund"></span> <span>Refund</span></a></li>
-                    <li><a href="#"><span class="mdi mdi-finance"></span> <span>Financial Report</span></a></li>
-                    <li><a href="#"><span class="mdi mdi-monitor-eye"></span> <span>Audit Trail</span></a></li>
+                    <li><a href="scholarship.html"><span class="mdi mdi-certificate-outline"></span>
+                            <span>Scholarship</span></a></li>
+                    <li><a href="refund.html"><span class="mdi mdi-cash-refund"></span> <span>Refund</span></a></li>
+                    <li><a href="financial-report.html"><span class="mdi mdi-finance"></span> <span>Financial
+                                Report</span></a></li>
+                    <li><a href="audit-trail.html"><span class="mdi mdi-monitor-eye"></span> <span>Audit
+                                Trail</span></a></li>
                 </ul>
             </nav>
             <nav aria-label="User options">
@@ -43,12 +52,52 @@
                 <button class="js-sidenav-toggle" aria-label="Toggle navigation menu">
                     <span class="mdi mdi-menu"></span>
                 </button>
-                <h3>Module title</h3>
+                <h3>Student Fees</h3>
             </div>
             <article class="module-content">
+                <div class="fee-assessment">
+                    <h3>Fee Assessment</h3>
 
+                    <!-- Student Search/Dropdown -->
+                    <div class="search-bar">
+                        <label for="studentSelect">Select Student:</label>
+                        <select id="studentSelect">
+                            <option value="">-- Select Student --</option>
+                            <option value="1">Torres1</option>
+                            <option value="2">Torres2</option>
+                        </select>
+                    </div>
+
+                    <!-- Fees Table -->
+                    <table id="feeTable">
+                        <thead>
+                            <tr>
+                                <th>Fee Type</th>
+                                <th>Amount</th>
+                                <th>Discount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- JS Injected rows -->
+                        </tbody>
+                    </table>
+
+                    <!-- Summary Panel -->
+                    <div class="summary-panel">
+                        <p><strong>Total Computed Fee:</strong> ₱<span id="totalFee">0.00</span></p>
+                        <p><strong>Amount Paid:</strong> ₱<span id="amountPaid">0.00</span></p>
+                        <p><strong>Outstanding Balance:</strong> ₱<span id="balance">0.00</span></p>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="actions">
+                        <button onclick="generateInvoice()">Generate Invoice</button>
+                        <button onclick="editFees()">Edit Fees</button>
+                    </div>
+                </div>
             </article>
         </section>
+
     </main>
     <footer>
         <address>
@@ -57,7 +106,64 @@
         </address>
         <p>&copy; 2025 Student Information System<br>All Rights Reserved</p>
     </footer>
-    <script src="fms-script.js"></script>
+    <script src="./assets/js/fms-script.js"></script>
+    <script>
+        const feeData = {
+            1: {
+                studentName: 'Torres1',
+                fees: [
+                    { type: 'Tuition', amount: 15000, discount: 2000 },
+                    { type: 'Miscellaneous', amount: 5000, discount: 0 }
+                ],
+                amountPaid: 10000
+            },
+            2: {
+                studentName: 'Torres2',
+                fees: [
+                    { type: 'Tuition', amount: 18000, discount: 3000 },
+                    { type: 'Miscellaneous', amount: 6000, discount: 1000 }
+                ],
+                amountPaid: 8000
+            }
+        };
+
+        document.getElementById('studentSelect').addEventListener('change', function () {
+            const studentId = this.value;
+            if (studentId && feeData[studentId]) {
+                const data = feeData[studentId];
+                const tbody = document.querySelector('#feeTable tbody');
+                tbody.innerHTML = '';
+
+                let total = 0;
+
+                data.fees.forEach(fee => {
+                    const discounted = fee.amount - (fee.discount || 0);
+                    total += discounted;
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+        <td>${fee.type}</td>
+        <td>₱${fee.amount.toFixed(2)}</td>
+        <td>₱${(fee.discount || 0).toFixed(2)}</td>
+      `;
+                    tbody.appendChild(row);
+                });
+
+                document.getElementById('totalFee').textContent = total.toFixed(2);
+                document.getElementById('amountPaid').textContent = data.amountPaid.toFixed(2);
+                document.getElementById('balance').textContent = (total - data.amountPaid).toFixed(2);
+            }
+        });
+
+        function generateInvoice() {
+            alert("Invoice generated (mock).");
+        }
+
+        function editFees() {
+            alert("Redirect to edit fees page (mock).");
+        }
+
+    </script>
 </body>
 
 </html>
