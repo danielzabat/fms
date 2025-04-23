@@ -1,3 +1,13 @@
+<?php
+require_once 'php/includes/auth.php';
+
+requireLogin();
+
+$user_id = $_SESSION['user_id'];
+$username = htmlspecialchars($_SESSION['username']); // safe output
+$user_role = $_SESSION['user_role'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,6 +29,7 @@
             <div>
                 <h1>Student Information System</h1>
                 <h2>Finance</h2>
+
             </div>
         </div>
     </header>
@@ -26,24 +37,22 @@
         <aside class="sidebar">
             <nav aria-label="Main navigation">
                 <ul>
-                    <li><a href="index.html"><span class="mdi mdi-account-school-outline"></span><span>Student
-                                Fees</span></a>
-                    </li>
-                    <li><a href="billing-invoicing.html"><span class="mdi mdi-invoice-list-outline"></span><span>Billing
-                                Invoicing</span></a>
-                    </li>
-                    <li><a href="scholarship.html"><span class="mdi mdi-certificate-outline"></span>
-                            <span>Scholarship</span></a></li>
-                    <li><a href="refund.html"><span class="mdi mdi-cash-refund"></span> <span>Refund</span></a></li>
-                    <li><a href="financial-report.html"><span class="mdi mdi-finance"></span> <span>Financial
-                                Report</span></a></li>
-                    <li><a href="audit-trail.html"><span class="mdi mdi-monitor-eye"></span> <span>Audit
-                                Trail</span></a></li>
+                    <li><a href="student-fees.php"><span class="mdi mdi-account-school-outline"></span><span>Student Fees</span></a></li>
+                    <li><a href="billing-invoicing.php"><span class="mdi mdi-invoice-list-outline"></span><span>Billing Invoicing</span></a></li>
+                    <li><a href="scholarship.php"><span class="mdi mdi-certificate-outline"></span><span>Scholarship</span></a></li>
+                    <li><a href="refund.php"><span class="mdi mdi-cash-refund"></span><span>Refund</span></a></li>
+
+                    <!-- Admin-only Modules -->
+                    <?php if ($user_role === 'admin'): ?>
+                        <li><a href="financial-report.php"><span class="mdi mdi-finance"></span><span>Financial Report</span></a></li>
+                        <li><a href="audit-trail.php"><span class="mdi mdi-monitor-eye"></span><span>Audit Trail</span></a></li>
+                    <?php endif; ?>
                 </ul>
             </nav>
+
             <nav aria-label="User options">
                 <ul>
-                    <li><a href="#"><span class="mdi mdi-logout"></span> <span>Logout</span></a></li>
+                    <li><a href="./php/logout.php"><span class="mdi mdi-logout"></span><span>Logout</span></a></li>
                 </ul>
             </nav>
         </aside>
@@ -114,47 +123,82 @@
         const feeData = {
             1: {
                 studentName: 'Heroes Torres',
-                fees: [
-                    { type: 'Tuition', amount: 15000, discount: 2000 },
-                    { type: 'Miscellaneous', amount: 5000, discount: 0 }
+                fees: [{
+                        type: 'Tuition',
+                        amount: 15000,
+                        discount: 2000
+                    },
+                    {
+                        type: 'Miscellaneous',
+                        amount: 5000,
+                        discount: 0
+                    }
                 ],
                 amountPaid: 10000
             },
             2: {
                 studentName: 'James Patrick Intia',
-                fees: [
-                    { type: 'Tuition', amount: 18000, discount: 3000 },
-                    { type: 'Miscellaneous', amount: 6000, discount: 1000 }
+                fees: [{
+                        type: 'Tuition',
+                        amount: 18000,
+                        discount: 3000
+                    },
+                    {
+                        type: 'Miscellaneous',
+                        amount: 6000,
+                        discount: 1000
+                    }
                 ],
                 amountPaid: 8000
             },
             3: {
                 studentName: 'Ariel Mendoza',
-                fees: [
-                    { type: 'Tuition', amount: 18000, discount: 3000 },
-                    { type: 'Miscellaneous', amount: 6000, discount: 1000 }
+                fees: [{
+                        type: 'Tuition',
+                        amount: 18000,
+                        discount: 3000
+                    },
+                    {
+                        type: 'Miscellaneous',
+                        amount: 6000,
+                        discount: 1000
+                    }
                 ],
                 amountPaid: 8000
             },
             4: {
                 studentName: 'Juliun Kyle Berog',
-                fees: [
-                    { type: 'Tuition', amount: 18000, discount: 3000 },
-                    { type: 'Miscellaneous', amount: 6000, discount: 1000 }
+                fees: [{
+                        type: 'Tuition',
+                        amount: 18000,
+                        discount: 3000
+                    },
+                    {
+                        type: 'Miscellaneous',
+                        amount: 6000,
+                        discount: 1000
+                    }
                 ],
                 amountPaid: 8000
             },
             5: {
                 studentName: 'Daniel Zabat',
-                fees: [
-                    { type: 'Tuition', amount: 18000, discount: 3000 },
-                    { type: 'Miscellaneous', amount: 6000, discount: 1000 }
+                fees: [{
+                        type: 'Tuition',
+                        amount: 18000,
+                        discount: 3000
+                    },
+                    {
+                        type: 'Miscellaneous',
+                        amount: 6000,
+                        discount: 1000
+                    }
                 ],
                 amountPaid: 8000
             }
         };
 
-        document.getElementById('studentSelect').addEventListener('change', function () {
+        document.getElementById('studentSelect').addEventListener('change', function() {
             const studentId = this.value;
             if (studentId && feeData[studentId]) {
                 const data = feeData[studentId];
@@ -189,7 +233,6 @@
         function editFees() {
             alert("Redirect to edit fees page (mock).");
         }
-
     </script>
 </body>
 

@@ -1,3 +1,14 @@
+<?php
+require_once 'php/includes/auth.php';
+
+requireLogin();
+requireRole('admin');
+
+$user_id = $_SESSION['user_id'];
+$username = htmlspecialchars($_SESSION['username']); // safe output
+$user_role = $_SESSION['user_role'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,25 +37,26 @@
         <aside class="sidebar">
             <nav aria-label="Main navigation">
                 <ul>
-                    <li><a href="index.html"><span class="mdi mdi-account-school-outline"></span><span>Student
+                    <li><a href="student-fees.php"><span class="mdi mdi-account-school-outline"></span><span>Student
                                 Fees</span></a>
                     </li>
-                    <li><a href="billing-invoicing.html"><span class="mdi mdi-invoice-list-outline"></span><span>Billing
+                    <li><a href="billing-invoicing.php"><span class="mdi mdi-invoice-list-outline"></span><span>Billing
                                 Invoicing</span></a>
                     </li>
-                    <li><a href="scholarship.html"><span class="mdi mdi-certificate-outline"></span>
+                    <li><a href="scholarship.php"><span class="mdi mdi-certificate-outline"></span>
                             <span>Scholarship</span></a></li>
-                    <li><a href="refund.html"><span class="mdi mdi-cash-refund"></span> <span>Refund</span></a></li>
-                    <li><a href="financial-report.html"><span class="mdi mdi-finance"></span> <span>Financial
+                    <li><a href="refund.php"><span class="mdi mdi-cash-refund"></span> <span>Refund</span></a></li>
+                    <li><a href="financial-report.php"><span class="mdi mdi-finance"></span> <span>Financial
                                 Report</span></a></li>
-                    <li><a href="audit-trail.html"><span class="mdi mdi-monitor-eye"></span> <span>Audit
+                    <li><a href="audit-trail.php"><span class="mdi mdi-monitor-eye"></span> <span>Audit
                                 Trail</span></a></li>
                 </ul>
             </nav>
             <nav aria-label="User options">
                 <ul>
-                    <li><a href="#"><span class="mdi mdi-logout"></span> <span>Logout</span></a></li>
+                    <li><a href="./php/logout.php"><span class="mdi mdi-logout"></span> <span>Logout</span></a></li>
                 </ul>
+            </nav>
             </nav>
         </aside>
         <section class="content">
