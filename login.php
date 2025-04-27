@@ -13,7 +13,7 @@ $error = $_SESSION['login_error'] ?? ''; // Show any login errors
 unset($_SESSION['login_error']); // Clear error after display
 unset($_SESSION['username']); // Clear username after using it
 
-// $hashed_password = password_hash('password123', PASSWORD_BCRYPT);
+// $hashed_password = password_hash('pw123', PASSWORD_BCRYPT);
 // echo "Hashed password for 'password123': $hashed_password\n"; // For demonstration purposes only
 ?>
 

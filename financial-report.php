@@ -1,12 +1,21 @@
 <?php
 require_once 'php/includes/auth.php';
 
-requireLogin();
-requireRole('admin');
-
 $user_id = $_SESSION['user_id'];
 $username = htmlspecialchars($_SESSION['username']); // safe output
 $user_role = $_SESSION['user_role'];
+requireLogin();
+requireRole('admin');
+
+
+
+// Example of how to use the addAuditLog function
+
+require_once 'php/includes/db.php'; // Database connection
+require_once 'php/includes/add_audit.php'; // Audit log functions
+$student_id = 123;
+
+addAuditLog($pdo, 'DELETE', 'students', $student_id, 'Deleted student record.');
 ?>
 
 <!DOCTYPE html>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once './db.php'; // DB connection: use PDO with prepared statements
+require_once './includes/db.php'; // DB connection: use PDO with prepared statements
 
 // Helper: sanitize input
 function sanitize($data)
