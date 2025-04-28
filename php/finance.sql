@@ -1,6 +1,6 @@
 -- Create Database
-CREATE DATABASE IF NOT EXISTS student_finance_system;
-USE student_finance_system;
+CREATE DATABASE IF NOT EXISTS finance;
+USE finance;
 
 -- Table: Users
 CREATE TABLE users (
