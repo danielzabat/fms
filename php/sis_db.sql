@@ -367,8 +367,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `role`, `created_at`) VALUES
-(1, 'admin1', 'youremail1@gmail.com', '$2y$10$PMLFgY7yxjpBFOSWpN1t9.Qz2KZQSRcGfY5fifnpHDZAXRuo8OuiG', '', '2025-05-11 11:04:03'),
-(2, 'user1', 'youremail2@gmail.com', '$2y$10$PMLFgY7yxjpBFOSWpN1t9.Qz2KZQSRcGfY5fifnpHDZAXRuo8OuiG', '', '2025-05-11 11:04:03');
+(1, 'admin1', 'youremail1@gmail.com', '$2y$10$PMLFgY7yxjpBFOSWpN1t9.Qz2KZQSRcGfY5fifnpHDZAXRuo8OuiG', 'manager', '2025-05-11 11:04:03'),
+(2, 'user1', 'youremail2@gmail.com', '$2y$10$PMLFgY7yxjpBFOSWpN1t9.Qz2KZQSRcGfY5fifnpHDZAXRuo8OuiG', 'staff', '2025-05-11 11:04:03');
 
 --
 -- Indexes for dumped tables
