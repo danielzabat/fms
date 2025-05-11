@@ -1,18 +1,13 @@
 <?php
-
-/**
- * logout.php
- * 
- * Securely logs out the user by:
- * 1. Starting the session (if not already started)
- * 2. Clearing all session variables
- * 3. Unsetting the session cookie
- * 4. Destroying the session
- * 5. Redirecting to login page with a logout indicator
- */
-
-// Start the session
 session_start();
+
+require_once 'includes/db.php';
+require_once 'includes/add_audit.php';
+
+// Log the logout before destroying the session
+if (isset($_SESSION['user_id'])) {
+    addAuditLog($pdo, 'LOGOUT', 'users', $_SESSION['user_id'], 'User logged out.');
+}
 
 // Clear all session variables in this script's memory
 $_SESSION = [];

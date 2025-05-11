@@ -1,6 +1,7 @@
 <?php
 session_start();
-require_once './includes/db.php'; // DB connection: use PDO with prepared statements
+require_once 'includes/db.php'; // DB connection
+require_once 'includes/mailer.php'; // Mailer functions
 
 // Helper: sanitize input
 function sanitize($data)
@@ -8,53 +9,67 @@ function sanitize($data)
     return htmlspecialchars(trim($data));
 }
 
-// Basic input validation
+// Input validation
 $username = sanitize($_POST['username'] ?? '');
-$password = $_POST['password'] ?? ''; // Raw password, do not sanitize yet
+$password = $_POST['password'] ?? '';
 
 if (empty($username) || empty($password)) {
     $_SESSION['login_error'] = "Both fields are required.";
-    $_SESSION['username'] = $username; // Preserve username
+    $_SESSION['username'] = $username;
     header("Location: ../login.php");
     exit();
 }
 
 try {
-    // Prepare SQL to prevent SQL injection
-    $stmt = $pdo->prepare("SELECT id, username, password_hash, role FROM users WHERE username = :username LIMIT 1");
+    $stmt = $pdo->prepare("SELECT id, username, password_hash, role, email FROM users WHERE username = :username LIMIT 1");
     $stmt->bindParam(':username', $username);
     $stmt->execute();
 
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Debugging: check if the user was found
     if ($user) {
-        // Check if password matches
         if (password_verify($password, $user['password_hash'])) {
-            // Valid credentials - create session
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_role'] = $user['role'];
-            $_SESSION['username'] = $user['username'];
+            // Credentials are valid, now generate and send OTP
 
-            // Redirect to homepage
-            header("Location: ../student-fees.php");
-            exit();
+            // Generate 6-digit OTP
+            $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            $otp_expiration = time() + (5 * 60); // OTP valid for 5 minutes
+
+            // Save OTP and expiration in session
+            $_SESSION['otp'] = $otp;
+            $_SESSION['otp_expires'] = $otp_expiration;
+
+            // Also save user temporarily
+            $_SESSION['pending_user'] = [
+                'id' => $user['id'],
+                'role' => $user['role'],
+                'username' => $user['username'],
+                'email' => $user['email']
+            ];
+
+            // Send OTP to user's Gmail
+            if (sendOTPEmail($user['email'], $otp)) {
+                // Redirect to OTP verification page
+                header("Location: ../verify-otp.php");
+                exit();
+            } else {
+                $_SESSION['login_error'] = "Failed to send OTP email. Try again.";
+                header("Location: ../login.php");
+                exit();
+            }
         } else {
-            // Invalid password
             $_SESSION['login_error'] = "Invalid username or password.";
-            $_SESSION['username'] = $username; // Retain username input
+            $_SESSION['username'] = $username;
             header("Location: ../login.php");
             exit();
         }
     } else {
-        // No user found with the provided username
         $_SESSION['login_error'] = "Invalid username or password.";
-        $_SESSION['username'] = $username; // Retain username input
+        $_SESSION['username'] = $username;
         header("Location: ../login.php");
         exit();
     }
 } catch (PDOException $e) {
-    // Log the actual error in a log file or monitoring system
     error_log("Login DB error: " . $e->getMessage());
     $_SESSION['login_error'] = "An unexpected error occurred. Please try again later.";
     header("Location: ../login.php");

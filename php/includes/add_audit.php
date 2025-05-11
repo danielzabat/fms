@@ -32,7 +32,7 @@ function addAuditLog(PDO $pdo, string $action, string $entity, int $entity_id, s
     try {
         // Prepare the SQL statement using placeholders for safety
         $stmt = $pdo->prepare("
-            INSERT INTO audit_trail (user_id, action, entity, entity_id, description)
+            INSERT INTO finance_audit_trail (user_id, action, entity, entity_id, description)
             VALUES (:user_id, :action, :entity, :entity_id, :description)
         ");
 

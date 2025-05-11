@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost:3307';
-$db = 'finance';
+$db = 'sis_db';
 $user = 'root';
 $pass = '';
 $charset = 'utf8mb4';

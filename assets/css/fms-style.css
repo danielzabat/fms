@@ -5,6 +5,11 @@
   src: url(../fonts/Poppins-Regular.ttf);
 }
 
+@font-face {
+  font-family: "Tinos";
+  src: url(../fonts/Tinos-Bold.ttf);
+}
+
 /* Root Variables */
 :root {
   --body-color: #fff;
@@ -73,7 +78,8 @@ footer {
 
 .header-content h1,
 .header-content h2 {
-  font-family: "Times New Roman", Times, serif;
+  font-family: "Tinos", serif;
+  font-weight: 600;
   text-transform: uppercase;
 }
 
@@ -122,6 +128,7 @@ footer {
   color: var(--text-color);
   border-radius: 8px 0 0 8px;
   transition: var(--tran-03);
+  cursor: pointer;
 }
 
 .sidebar a .mdi {
@@ -147,6 +154,79 @@ footer {
 .js-sidenav-toggle:hover {
   background-color: var(--toggle-color);
   color: var(--text-color);
+}
+
+/* Logout Modal */
+.logout-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 1000;
+}
+
+.logout-modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.logout-modal-box {
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.logout-modal-overlay.show .modal-box {
+  transform: scale(1);
+}
+
+.logout-modal-box h2 {
+  margin-top: 0;
+  font-size: 1.2em;
+}
+
+.logout-modal-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.logout-modal-buttons button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  opacity: 0.8;
+}
+
+.cancel-btn {
+  background-color: #ccc;
+}
+
+.logout-btn {
+  background-color: var(--btn-red);
+  color: white;
+}
+
+.cancel-btn:hover,
+.logout-btn:hover {
+  opacity: 1;
 }
 
 /* Table Styling */
@@ -221,6 +301,146 @@ footer {
   border-top: 5px double var(--toggle-color);
 }
 
+/* User Setting */
+
+.profile-section {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 2rem auto;
+  transition: box-shadow 0.3s ease;
+}
+
+.profile-section:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.profile-section h4 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+  border-bottom: 2px solid #d9d9d9;
+  padding-bottom: 0.5rem;
+}
+
+.profile-section p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  color: #444;
+}
+
+.profile-section strong {
+  color: #111;
+}
+
+.profile-section button {
+  background-color: var(--primary-color-light);
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+}
+
+.profile-section button:hover {
+  background-color: var(--primary-color);
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.modal-box h4 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.modal-box input[type="password"] {
+  width: 100%;
+  padding: 0.6rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.modal-box button {
+  background-color: var(--btn-green);
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  width: 100%;
+}
+
+.modal-box button:hover {
+  background-color: #009900;
+}
+
+button.close-btn {
+  background-color: var(--btn-red);
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  margin-top: 1rem;
+  width: 100%;
+
+  &:hover {
+    background-color: #cc0000;
+  }
+}
+
+.message.success {
+  color: var(--btn-green);
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.message.error {
+  color: var(--btn-red);
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .profile-section {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .modal-box {
+    width: 90%;
+  }
+}
 /* Audit Trail */
 .audit-trail {
   width: var(--module-content-width);
@@ -236,6 +456,16 @@ footer {
   max-width: 100%;
   border: 1px solid var(--text-color);
   border-radius: 4px;
+}
+
+.audit-trail a {
+  color: var(--body-color);
+  text-decoration: none;
+  text-align: center;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 /* Billing Module */
@@ -309,82 +539,64 @@ footer {
   background-color: var(--btn-red);
 }
 
-/* Scholarship Module */
-.scholarship {
+.billing-container {
+  background-color: var(--body-color);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   width: var(--module-content-width);
-  margin-top: 20px;
 }
 
-.scholarship .tabs {
-  width: var(--module-content-width);
-  margin: 50px 0 20px;
+.billing-container h2 {
+  color: var(--primary-color);
 }
 
-.scholarship button {
-  padding: 10px 20px;
-  cursor: pointer;
-  background: var(--primary-color-light);
-  color: var(--body-color);
-  border: none;
+.billing-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.billing-container label {
+  margin: 10px 0 5px;
+}
+
+.billing-container input,
+.billing-container select {
+  padding: 10px;
+  border: 1px solid #ccc;
   border-radius: 5px;
 }
 
-.scholarship button.active {
-  background: var(--primary-color-light);
-}
-
-.scholarship .section {
-  display: none;
-}
-
-.scholarship .section.active {
-  display: block;
-}
-
-.scholarship .btn {
-  padding: 5px 10px;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  color: var(--body-color);
-}
-
-.scholarship .action {
-  text-align: center;
-}
-
-.scholarship .approve {
-  background: var(--btn-green);
-}
-
-.scholarship .reject {
-  background: var(--btn-red);
-}
-
-.scholarship .view {
-  background: var(--btn-blue);
-}
-
-.scholarship .add-btn {
-  margin: 10px 0;
-  background: var(--btn-green);
-}
-
-.scholarship #addScholarshipForm {
-  display: flex;
-  padding: 20px;
-  background: var(--body-color);
-  border: 1px solid #ccc;
+.billing-container button {
+  padding: 10px;
   margin-top: 10px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.scholarship input,
-.scholarship select {
-  margin: 10px 0;
+.billing-container button:hover {
+  background-color: var(--primary-color-light);
+}
+
+.billing-container table {
   width: 100%;
-  padding: 8px;
-  border-radius: 3px;
-  border: 1px solid #ccc;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.billing-container th,
+.billing-container td {
+  padding: 12px;
+  border: 1px solid #ececec;
+  text-align: left;
+}
+
+.billing-container th {
+  background-color: var(--primary-color-light);
+  color: var(--body-color);
 }
 
 /* Fee Assessment */
@@ -456,92 +668,6 @@ footer {
   margin-top: 20px;
 }
 
-.filter-bar {
-  margin: 1rem 0;
-  border-collapse: collapse;
-  width: 100%;
-}
-
-#refundDetails {
-  background-color: var(--body-color);
-  padding: 1rem;
-  margin-top: 1rem;
-  border-radius: 10px;
-  border: 1px solid #aaa;
-}
-
-.refund-content {
-  background-color: var(--body-color);
-  padding: 1rem;
-  margin-top: 1rem;
-  border-radius: 10px;
-  border: 1px solid #aaa;
-}
-
-.modal-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background: var(--body-color);
-  border-radius: 12px;
-  padding: 25px 30px;
-  width: 500px;
-  max-width: 90%;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  position: relative;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-.modal-section {
-  margin-bottom: 20px;
-}
-
-.modal-section h4 {
-  margin-bottom: 8px;
-  color: var(--primary-color-light);
-}
-
-.modal-section textarea {
-  width: 442px;
-  height: 143px;
-  padding: 0.5rem;
-  resize: none;
-}
-
-.modal-section p {
-  margin: 3px 0;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-.cancel-btn {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 6px;
-  background-color: #6c757d;
-  color: var(--body-color);
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.cancel-btn:hover {
-  background-color: #5a6268;
-}
-
 .approve-btn,
 .deny-btn {
   padding: 8px 14px;
@@ -566,17 +692,6 @@ footer {
   font-size: 24px;
   cursor: pointer;
   color: #888;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
 }
 
 .view-btn {
@@ -612,6 +727,19 @@ footer {
     transition: var(--tran-03);
   }
 
+  .tab input[type="radio"] {
+    display: none;
+  }
+
+  .tab span {
+    display: inline-block;
+  }
+
+  .tab input[type="radio"]:checked + span {
+    color: #ffffff;
+    text-decoration: underline;
+  }
+
   .tab:hover {
     background-color: var(--primary-color);
   }
@@ -623,6 +751,15 @@ footer {
   .date-picker input {
     margin-right: 1rem;
     padding: 0.5rem;
+  }
+  button {
+    padding: 10px;
+    margin-top: 10px;
+    background-color: var(--primary-color-light);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
   }
 
   .kpi-cards {
@@ -639,7 +776,6 @@ footer {
     background-color: var(--sidebar-color);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     flex-grow: 1;
-    /* flex-basis: 150px; */
   }
 
   .detail-view {
@@ -655,5 +791,72 @@ footer {
   .detail-view h3 {
     color: var(--primary-color);
     margin-bottom: 0.5rem;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .modal-content {
+    background-color: var(--body-color);
+    margin: 10% auto;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: gray;
+    cursor: pointer;
+  }
+
+  .close-btn:hover {
+    color: black;
+  }
+
+  input[type="password"],
+  button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  button {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: var(--primary-color);
+    color: var(--body-color);
+    transition: var(--tran-03);
+    width: fit-content;
+  }
+
+  button:hover {
+    background-color: var(--primary-color-light);
+  }
+
+  .error-message {
+    margin-top: 10px;
+    color: var(--btn-red);
+    font-size: 0.9rem;
   }
 }

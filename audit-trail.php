@@ -1,12 +1,27 @@
 <?php
 require_once 'php/includes/auth.php';
+require_once 'php/includes/db.php'; // Make sure this file sets up $pdo safely
 
 requireLogin();
-requireRole('admin');
+requireRole('manager');
 
 $user_id = $_SESSION['user_id'];
-$username = htmlspecialchars($_SESSION['username']); // safe output
+$username = htmlspecialchars($_SESSION['username']);
 $user_role = $_SESSION['user_role'];
+
+// Set sort parameters with defaults
+$allowedColumns = ['audit_id', 'user_id', 'action', 'entity', 'entity_id', 'description', 'timestamp'];
+$sortColumn = in_array($_GET['sort'] ?? '', $allowedColumns) ? $_GET['sort'] : 'timestamp';
+$sortOrder = ($_GET['order'] ?? '') === 'asc' ? 'ASC' : 'DESC';
+
+try {
+    $stmt = $pdo->prepare("SELECT * FROM finance_audit_trail ORDER BY $sortColumn $sortOrder");
+    $stmt->execute();
+    $auditRows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $error = "Failed to fetch audit trail: " . htmlspecialchars($e->getMessage());
+    $auditRows = [];
+}
 ?>
 
 <!DOCTYPE html>
@@ -15,21 +30,27 @@ $user_role = $_SESSION['user_role'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Management | Audit Trail</title>
     <link rel="stylesheet" href="./assets/css/fms-style.css">
     <link rel="shortcut icon" href="./assets/favicon/SIS.ico" type="image/x-icon">
-    <title>Finance Management</title>
 </head>
-<style>
-
-</style>
 
 <body>
+    <div class="logout-modal-overlay" id="logoutModal">
+        <div class="logout-modal-box">
+            <h3>You're about to log out.</br> Do you want to continue?</h3>
+            <div class="logout-modal-buttons">
+                <button class="cancel-btn" id="cancelLogout">Cancel</button>
+                <button class="logout-btn" id="confirmLogout">Log out</button>
+            </div>
+        </div>
+    </div>
     <header>
         <div class="header-content">
             <img src="./assets/img/SIS-logo.png" alt="Student Information System Logo">
             <div>
                 <h1>Student Information System</h1>
-                <h2>Finance</h2>
+                <h2>Finance Management</h2>
             </div>
         </div>
     </header>
@@ -39,22 +60,23 @@ $user_role = $_SESSION['user_role'];
                 <ul>
                     <li><a href="student-fees.php"><span class="mdi mdi-account-school-outline"></span><span>Student Fees</span></a></li>
                     <li><a href="billing-invoicing.php"><span class="mdi mdi-invoice-list-outline"></span><span>Billing Invoicing</span></a></li>
-                    <li><a href="scholarship.php"><span class="mdi mdi-certificate-outline"></span><span>Scholarship</span></a></li>
-                    <li><a href="refund.php"><span class="mdi mdi-cash-refund"></span><span>Refund</span></a></li>
-
+                    <li><a href="refund-request.php"><span class="mdi mdi-cash-refund"></span><span>Refund Request</span></a></li>
                     <!-- Admin-only Modules -->
-                    <?php if ($user_role === 'admin'): ?>
+                    <?php if ($user_role === 'manager'): ?>
+                        <li><a href="refund-approval.php"><span class="mdi mdi-cash-refund"></span><span>Refund Approval</span></a></li>
                         <li><a href="financial-report.php"><span class="mdi mdi-finance"></span><span>Financial Report</span></a></li>
                         <li><a href="audit-trail.php"><span class="mdi mdi-monitor-eye"></span><span>Audit Trail</span></a></li>
                     <?php endif; ?>
+                    <li><a href="user-setting.php"><span class="mdi mdi-account-box"></span><span>User Setting</span></a></li>
                 </ul>
             </nav>
             <nav aria-label="User options">
                 <ul>
-                    <li><a href="./php/logout.php"><span class="mdi mdi-logout"></span> <span>Logout</span></a></li>
+                    <li><a id="logoutTrigger"><span class="mdi mdi-logout"></span> <span>Logout</span></a></li>
                 </ul>
             </nav>
         </aside>
+
         <section class="content">
             <div class="content-header">
                 <button class="js-sidenav-toggle" aria-label="Toggle navigation menu">
@@ -64,121 +86,53 @@ $user_role = $_SESSION['user_role'];
             </div>
             <article class="module-content">
                 <div class="audit-trail">
-
-
                     <div class="search-container">
-                        <input type="text" id="searchInput" placeholder="Search by action, entity, or user ID..."
-                            aria-label="Search Audit Trail" />
+                        <input type="text" id="searchInput" placeholder="Search audit trail..." />
                     </div>
-                    <table aria-label="Audit Trail Table">
+
+                    <?php if (!empty($error)): ?>
+                        <p class="error"><?= $error ?></p>
+                    <?php endif; ?>
+
+                    <table id="auditTable">
                         <thead>
                             <tr>
-                                <th>Audit ID</th>
-                                <th>User ID</th>
-                                <th>Action</th>
-                                <th>Entity</th>
-                                <th>Entity ID</th>
-                                <th>Description</th>
-                                <th>Timestamp</th>
+                                <?php
+                                foreach (['audit_id', 'user_id', 'action', 'entity', 'entity_id', 'description', 'timestamp'] as $col) {
+                                    $label = ucwords(str_replace('_', ' ', $col));
+                                    $order = ($sortColumn === $col && $sortOrder === 'ASC') ? 'desc' : 'asc';
+                                    echo "<th><a href=\"?sort=$col&order=$order\">$label</a></th>";
+                                }
+                                ?>
                             </tr>
                         </thead>
-                        <tbody id="auditTableBody">
-                            <tr>
-                                <td>1</td>
-                                <td>101</td>
-                                <td>UPDATE</td>
-                                <td>invoices</td>
-                                <td>56</td>
-                                <td>Updated invoice status to paid</td>
-                                <td>2025-04-12 14:35:00</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>102</td>
-                                <td>CREATE</td>
-                                <td>payments</td>
-                                <td>78</td>
-                                <td>Created new payment record</td>
-                                <td>2025-04-12 15:20:11</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>103</td>
-                                <td>DELETE</td>
-                                <td>refund_requests</td>
-                                <td>34</td>
-                                <td>Deleted refund request entry</td>
-                                <td>2025-04-13 09:12:45</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>104</td>
-                                <td>CREATE</td>
-                                <td>scholarships</td>
-                                <td>90</td>
-                                <td>Added new scholarship grant</td>
-                                <td>2025-04-13 10:45:23</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>105</td>
-                                <td>UPDATE</td>
-                                <td>student_fees</td>
-                                <td>67</td>
-                                <td>Adjusted student fee amount</td>
-                                <td>2025-04-13 11:07:10</td>
-                            </tr>
-                            <tr>
-                                <td>6</td>
-                                <td>101</td>
-                                <td>VIEW</td>
-                                <td>financial_reports</td>
-                                <td>12</td>
-                                <td>Viewed monthly financial report</td>
-                                <td>2025-04-13 11:35:42</td>
-                            </tr>
-                            <tr>
-                                <td>7</td>
-                                <td>106</td>
-                                <td>CREATE</td>
-                                <td>invoices</td>
-                                <td>88</td>
-                                <td>Generated new invoice for student</td>
-                                <td>2025-04-13 12:10:18</td>
-                            </tr>
-                            <tr>
-                                <td>8</td>
-                                <td>102</td>
-                                <td>UPDATE</td>
-                                <td>users</td>
-                                <td>105</td>
-                                <td>Changed user password</td>
-                                <td>2025-04-13 12:30:05</td>
-                            </tr>
-                            <tr>
-                                <td>9</td>
-                                <td>107</td>
-                                <td>DELETE</td>
-                                <td>student_fees</td>
-                                <td>69</td>
-                                <td>Removed incorrect fee record</td>
-                                <td>2025-04-13 13:00:33</td>
-                            </tr>
-                            <tr>
-                                <td>10</td>
-                                <td>103</td>
-                                <td>VIEW</td>
-                                <td>scholarship_applications</td>
-                                <td>45</td>
-                                <td>Reviewed scholarship application status</td>
-                                <td>2025-04-13 13:22:17</td>
-                            </tr>
+                        <tbody>
+                            <?php foreach ($auditRows as $row): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($row['audit_id']) ?></td>
+                                    <td><?= htmlspecialchars($row['user_id']) ?></td>
+                                    <td><?= htmlspecialchars($row['action']) ?></td>
+                                    <td><?= htmlspecialchars($row['entity']) ?></td>
+                                    <td><?= htmlspecialchars($row['entity_id']) ?></td>
+                                    <td><?= htmlspecialchars($row['description']) ?></td>
+                                    <td><?= htmlspecialchars($row['timestamp']) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
             </article>
         </section>
     </main>
+    <div class="logout-modal-overlay" id="logoutModal">
+        <div class="logout-modal-box">
+            <h3>You're about to log out.</br> Do you want to continue?</h3>
+            <div class="logout-modal-buttons">
+                <button class="cancel-btn" id="cancelLogout">Cancel</button>
+                <button class="logout-btn" id="confirmLogout">Log out</button>
+            </div>
+        </div>
+    </div>
     <footer>
         <address>
             <p>For inquiries please contact 000-0000<br>
@@ -189,11 +143,11 @@ $user_role = $_SESSION['user_role'];
     <script src="./assets/js/fms-script.js"></script>
     <script>
         const searchInput = document.getElementById("searchInput");
-        const tableBody = document.getElementById("auditTableBody");
+        const table = document.getElementById("auditTable").getElementsByTagName("tbody")[0];
 
-        const handleSearchInput = () => {
+        searchInput.addEventListener("input", () => {
             const filter = searchInput.value.toLowerCase();
-            const rows = tableBody.getElementsByTagName("tr");
+            const rows = table.getElementsByTagName("tr");
 
             for (const row of rows) {
                 const cells = row.getElementsByTagName("td");
@@ -208,9 +162,7 @@ $user_role = $_SESSION['user_role'];
 
                 row.style.display = match ? "" : "none";
             }
-        };
-
-        searchInput.addEventListener("input", handleSearchInput);
+        });
     </script>
 </body>
 

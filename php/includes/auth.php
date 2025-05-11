@@ -14,7 +14,7 @@ if (session_status() === PHP_SESSION_NONE) {
 // -------------------------
 
 // Define session lifetime in seconds (e.g., 15 minutes = 900 seconds)
-define('SESSION_TIMEOUT', 180); // Adjust session timeout duration here (30 seconds for testing)
+define('SESSION_TIMEOUT', 9999999); // 180 seconds (3 minutes)
 
 
 // -------------------------
@@ -89,35 +89,4 @@ function requireRole(string $role): void
         http_response_code(403);
         exit("Access denied: You do not have permission to view this page.");
     }
-}
-
-
-// -------------------------
-// CSRF Token Utilities
-// -------------------------
-
-/**
- * Generate and store a CSRF token in the session.
- * Call this before rendering any form that modifies data.
- * 
- * @return string CSRF token
- */
-function generateCsrfToken(): string
-{
-    if (empty($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // Secure token
-    }
-    return $_SESSION['csrf_token'];
-}
-
-/**
- * Validate a CSRF token.
- * Call this on form submission before processing any sensitive action.
- * 
- * @param string|null $token Token received from form
- * @return bool True if token is valid, false otherwise
- */
-function validateCsrfToken(?string $token): bool
-{
-    return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token ?? '');
 }
